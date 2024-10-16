@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Sort twitter/X comments by likes",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Sorts twitter/X comments by likes.",
   "icons": {
     "48": "icon.png"

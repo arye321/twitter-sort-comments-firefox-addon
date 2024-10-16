@@ -1,33 +1,47 @@
-// Define the number of retries and interval between each check
 const maxRetries = 20;
 let retries = 0;
 let retries2 = 0;
+let retries3 = 0;
 let firstload = true;
 let lastUrl = "";
-// Function to check for the required elements
+
+function replayButtonOn() {
+  if (document.querySelector('button[aria-label="Reply"]')) {
+    return true;
+  } else {
+    return false;
+  }
+}
 function checkElements() {
-  console.log("checking...");
+  // console.log("checking...");
 
   if (document?.querySelector('div[data-testid="primaryColumn"]')?.scrollHeight > 1000) {
     setTimeout(runActions1, 500);
   } else if (retries < maxRetries) {
     retries++;
-    setTimeout(checkElements, 500); // Retry every 0.5 seconds
+    setTimeout(checkElements, 500);
   }
 }
 
-// Function to perform the scroll and click actions
 function runActions1() {
   window.scrollTo(0, 1000);
+  function scrollup() {
+    if (replayButtonOn) {
+      window.scrollTo(0, 0);
+      setTimeout(runActions2, 100);
+    } else {
+      setTimeout(scrollup, 1);
+    }
+  }
 
-  setTimeout(function () {
-    window.scrollTo(0, 0);
-  }, 1);
-  setTimeout(runActions2, 100);
+  if (retries3 < maxRetries) {
+    retries3++;
+    setTimeout(scrollup, 1);
+  }
 }
 
 function runActions2() {
-  if (document.querySelector('button[aria-label="Reply"]')) {
+  if (replayButtonOn()) {
     document
       .querySelector('div[aria-label="Home timeline"]')
       .querySelector('button[aria-haspopup="menu"]')
@@ -39,27 +53,28 @@ function runActions2() {
     }, 100);
   } else {
     if (retries2 < maxRetries) {
-      retries++;
-      setTimeout(runActions2, 500);
+      retries2++;
+      setTimeout(runActions2, 100);
     }
   }
 }
 
-// Function to check if the current URL is a status page
 function isStatusPage() {
   return location.href.toLowerCase().includes("status");
 }
 
-// Function to run when URL changes
 function onUrlChange() {
-  if (isStatusPage()) {
+  if (isStatusPage() && !replayButtonOn()) {
+    retries = 0;
+    retries2 = 0;
+    retries3 = 0;
+
     checkElements();
   }
 }
 
-// Listen for URL changes
 if (firstload) {
-  console.log(1);
+  // console.log(1);
   firstload = false;
   lastUrl = location.href;
 }
