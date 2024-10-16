@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+  "name": "Sort twitter/X comments by likes",
+  "version": "0.1",
+  "description": "Sorts twitter/X comments by likes.",
+  "icons": {
+    "48": "icon.png"
+  },
+  "permissions": ["activeTab", "https://x.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://x.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "browser_action": {
+    "default_icon": "icons/icon.png"
+  }
+}
