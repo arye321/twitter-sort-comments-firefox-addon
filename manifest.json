@@ -1,6 +1,11 @@
 {
   "manifest_version": 2,
   "name": "Sort twitter/X comments by likes",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{d659a20f-217e-4999-abb6-2b53e4880080}"
+    }
+  },
   "version": "1.1",
   "description": "Sorts twitter/X comments by likes.",
   "icons": {
