@@ -2,24 +2,21 @@
 const maxRetries = 20;
 let retries = 0;
 let retries2 = 0;
-
-let notDone = true;
+let firstload = true;
+let lastUrl = "";
 // Function to check for the required elements
 function checkElements() {
-  console.log("check");
+  console.log("checking...");
 
   if (document?.querySelector('div[data-testid="primaryColumn"]')?.scrollHeight > 1000) {
-    console.log("done");
-    notDone = false;
     setTimeout(runActions1, 500);
-  } else if (retries < maxRetries && notDone) {
+  } else if (retries < maxRetries) {
     retries++;
     setTimeout(checkElements, 500); // Retry every 0.5 seconds
   }
 }
 
 // Function to perform the scroll and click actions
-
 function runActions1() {
   window.scrollTo(0, 1000);
 
@@ -28,6 +25,7 @@ function runActions1() {
   }, 1);
   setTimeout(runActions2, 100);
 }
+
 function runActions2() {
   if (document.querySelector('button[aria-label="Reply"]')) {
     document
@@ -41,13 +39,37 @@ function runActions2() {
     }, 100);
   } else {
     if (retries2 < maxRetries) {
-      retries2++;
-      setTimeout(runActions1, 500);
+      retries++;
+      setTimeout(runActions2, 500);
     }
   }
+}
 
-  // Start the checking process
+// Function to check if the current URL is a status page
+function isStatusPage() {
+  return location.href.toLowerCase().includes("status");
 }
-if (window.location.href.toLowerCase().includes("status")) {
-  checkElements();
+
+// Function to run when URL changes
+function onUrlChange() {
+  if (isStatusPage()) {
+    checkElements();
+  }
 }
+
+// Listen for URL changes
+if (firstload) {
+  console.log(1);
+  firstload = false;
+  lastUrl = location.href;
+}
+new MutationObserver(() => {
+  const url = location.href;
+  if (url !== lastUrl) {
+    lastUrl = url;
+    onUrlChange();
+  }
+}).observe(document, { subtree: true, childList: true });
+
+// Initial run
+onUrlChange();
